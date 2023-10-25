@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Template for generating AWS parameters store
+################################
+# Generate Parameter Store
+################################
+
+Parameters:
+  Stage:
+    Type: String
+    Description: The environment of deployment
+    Default: "dev"
+    AllowedValues: [ dev, prod ]
+
+Resources:
+  AccessToken:
+    Type: "AWS::SSM::Parameter"
+    Properties:
+      Name: !Sub /github/aws_access_token
+      Type: "String"
+      Value: "" # put your access token here
+      Description: "Description of my parameter"
+  #      Tags:
+  #        - Key: "Application"
+  #          Value: "MyApp"
+
+Outputs:
+  AccessToken:
+    Description: "Name of the created parameter"
+    Value: !Ref AccessToken
