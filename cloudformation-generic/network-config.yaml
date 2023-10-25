@@ -9,9 +9,7 @@ Parameters:
 
 
 Resources:
-################################
-#  Define a VPC with two subnets
-################################
+
   VPC:
     Type: AWS::EC2::VPC
     Properties:
@@ -22,14 +20,12 @@ Resources:
       Tags:
         - Key: Name
           Value: API-VPC
-################################
-#  Two subnets, can be defined in different regions
-################################
+
   Subnet1:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
-      AvailabilityZone: !Select [0, !GetAZs ''] # Use Select and GetAZs function to select specific AZ
+      AvailabilityZone: !Select [0, !GetAZs '']
       CidrBlock: !Sub 10.0.0.0/20
       MapPublicIpOnLaunch: true
 
@@ -71,12 +67,10 @@ Resources:
     Type: AWS::EC2::Route
     DependsOn: VPCGatewayAttachment
     Properties:
-      GatewayId: !Ref InternetGateway #Use Ref to reference a specific resource
+      GatewayId: !Ref InternetGateway
       RouteTableId: !Ref RouteTable
       DestinationCidrBlock: 0.0.0.0/0
-################################
-# Define Security groups shared within different subnets
-################################
+
   LoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -126,6 +120,8 @@ Outputs:
 #    Value: !Ref ContainerSecurityGroup
 #    Export:
 #      Name: !Sub ${AWS::StackName}-container-SG
+
+
 
   VPC:
     Description: The ID of the VPC created

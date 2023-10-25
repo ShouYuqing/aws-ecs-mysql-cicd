@@ -10,19 +10,19 @@ Parameters:
   RepositoryOwner:
     Type: String
     Description: The owner of the GitHub repository.
-    Default: ShouYuqing # define your repository owner
+    Default: ShouYuqing
   RepositoryName:
     Type: String
     Description: The name of the GitHub repository.
-    Default: cicd-fargate-rds-api-gateway # define your own repository
+    Default: aws-ecs-mysql-cicd
   RepositoryBranch:
     Type: String
     Description: The name of the branch.
-    Default: 1-codepipeline-fargate
+    Default: gateway-elb-rds
   DockerImageRepository: # Should be the same as 'DockerImageRepository' in config.json
     Type: String
     Description: The name of the ECR Repository  
-    Default: employee-ecs-image2
+    Default: employee-ecs-image
 
 Resources:
 
@@ -160,11 +160,11 @@ Resources:
           - Name: ECR_REPO
             Value: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${DockerImageRepository}      
 
-  ECRRepository2:
+  ECRRepository:
     Type: AWS::ECR::Repository
     Properties:
-#      ImageScanningConfiguration:
-#        scanOnPush: true
+      ImageScanningConfiguration:
+        scanOnPush: true
       RepositoryName: !Ref DockerImageRepository
       LifecyclePolicy:
         LifecyclePolicyText: "{\"rules\":[{\"rulePriority\":1,\"description\":\"Maintain maximum of 5 versions\",\"selection\":{\"tagStatus\":\"any\",\"countType\":\"imageCountMoreThan\",\"countNumber\":5},\"action\":{\"type\":\"expire\"}}]}"
@@ -174,7 +174,7 @@ Resources:
   ArtifactsBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub clark.codepipeline.${ProjectName}
+      BucketName: !Sub de.polimetla.codepipeline.${ProjectName}
       LifecycleConfiguration:
         Rules:
           - Id: DeleteBuildArtifactsAfterOneWeek
@@ -307,3 +307,13 @@ Resources:
                   - iam:PassRole
                 Resource:
                   - !Sub arn:aws:iam::${AWS::AccountId}:role/*
+              - Effect: Allow
+                Action:
+                  - apigateway:*
+                Resource:
+                  - !Sub arn:aws:apigateway:${AWS::Region}
+              - Effect: Allow
+                Action:
+                  - s3:Get*
+                Resource:
+                  - !Sub arn:aws:s3:::${ArtifactsBucket}/* # To create API from swagger file 
