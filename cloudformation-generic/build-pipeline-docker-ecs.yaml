@@ -14,11 +14,11 @@ Parameters:
   RepositoryName:
     Type: String
     Description: The name of the GitHub repository.
-    Default: cicd-fargate-rds-api-gateway # define your own repository
+    Default: aws-ecs-mysql-cicd # define your own repository
   RepositoryBranch:
     Type: String
     Description: The name of the branch.
-    Default: 1-codepipeline-fargate
+    Default: a-ecs-codepipeline
   DockerImageRepository: # Should be the same as 'DockerImageRepository' in config.json
     Type: String
     Description: The name of the ECR Repository  
